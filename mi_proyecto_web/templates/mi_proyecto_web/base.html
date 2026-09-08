@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}FerroCasa | Herramientas para hacer{% endblock %}</title>
+    <style>
+        :root { --ink: #20252b; --muted: #66717d; --accent: #ef8f2f; --accent-dark: #c96916; --paper: #f6f3ed; --line: #ded8cd; --white: #fffdf9; }
+        * { box-sizing: border-box; }
+        body { margin: 0; color: var(--ink); background: var(--paper); font-family: Georgia, 'Times New Roman', serif; }
+        header { background: var(--ink); color: white; padding: 1.25rem 6vw; display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+        header a { color: white; text-decoration: none; }
+        .marca { font-size: 1.5rem; letter-spacing: .04em; }
+        nav a { color: #f5c27f; font-family: Arial, sans-serif; font-size: .9rem; }
+        nav { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+        nav form { margin: 0; }
+        .nav-salir { border: 0; background: none; color: #f5c27f; cursor: pointer; font: .9rem Arial, sans-serif; padding: 0; }
+        main { max-width: 1180px; margin: 0 auto; padding: 3.5rem 6vw; }
+        h1 { font-size: clamp(2.2rem, 5vw, 4.5rem); line-height: .95; max-width: 680px; margin: 0 0 1rem; }
+        h2 { margin-top: 0; }
+        .intro { color: var(--muted); font: 1rem/1.6 Arial, sans-serif; max-width: 650px; }
+        .resumen { display: flex; gap: 2rem; margin: 2rem 0; border-block: 1px solid var(--line); padding: 1rem 0; font-family: Arial, sans-serif; }
+        .resumen strong { display: block; font-size: 1.5rem; color: var(--accent); }
+        .productos { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
+        .producto { background: var(--white); border: 1px solid var(--line); padding: 1.25rem; min-height: 390px; display: flex; flex-direction: column; justify-content: space-between; }
+        .producto.agotado { background: #ebe8e2; color: #7a7a76; }
+        .producto-imagen { width: calc(100% + 2.5rem); height: 170px; margin: -1.25rem -1.25rem 1rem; object-fit: cover; display: block; }
+        .categoria { color: var(--accent); font: .72rem/1.2 Arial, sans-serif; text-transform: uppercase; letter-spacing: .08em; }
+        .producto h2 { font-size: 1.2rem; margin: .55rem 0; }
+        .precio { font: bold 1.15rem Arial, sans-serif; }
+        .stock { color: var(--muted); font: .85rem Arial, sans-serif; }
+        .boton { display: inline-block; margin-top: 1rem; background: var(--accent); color: var(--ink); padding: .72rem .9rem; text-decoration: none; font: bold .8rem Arial, sans-serif; border: 0; }
+        .boton:hover { background: var(--accent-dark); color: white; }
+        .boton-comprar { border: 0; cursor: pointer; }
+        .boton-comprar:disabled { background: #c8c4bc; color: #77736c; cursor: not-allowed; }
+        .mensajes { margin-bottom: 1.5rem; font: .9rem Arial, sans-serif; }
+        .mensaje { border: 1px solid var(--line); padding: .8rem 1rem; background: var(--white); }
+        .mensaje.error { border-color: #c66; color: #9b2929; }
+        .mensaje.success { border-color: #8dbb8c; color: #27622d; }
+        .hero { padding: clamp(2rem, 8vw, 6rem) 0; display: grid; grid-template-columns: 1.15fr .85fr; gap: 4rem; align-items: center; }
+        .hero-kicker { color: var(--accent-dark); font: bold .8rem Arial, sans-serif; letter-spacing: .14em; text-transform: uppercase; }
+        .hero-panel { background: var(--ink); color: white; padding: 2rem; min-height: 270px; display: flex; flex-direction: column; justify-content: space-between; }
+        .hero-panel strong { color: #f5c27f; font-size: 3rem; }
+        .seccion-cabecera { display: flex; justify-content: space-between; align-items: end; margin: 2rem 0 1rem; gap: 1rem; }
+        .formulario { max-width: 500px; background: var(--white); border: 1px solid var(--line); padding: clamp(1.5rem, 5vw, 3rem); margin: 2rem auto; }
+        .formulario label { display: block; font: bold .8rem Arial, sans-serif; margin: 1rem 0 .35rem; }
+        .formulario input { width: 100%; padding: .75rem; border: 1px solid var(--line); font: 1rem Arial, sans-serif; }
+        .formulario ul, .errorlist { color: #9b2929; font: .8rem Arial, sans-serif; padding-left: 1rem; }
+        .formulario .boton { width: 100%; margin-top: 1.5rem; }
+        footer { border-top: 1px solid var(--line); padding: 1.5rem 6vw; color: var(--muted); font: .8rem Arial, sans-serif; }
+        @media (max-width: 700px) { .hero { grid-template-columns: 1fr; gap: 2rem; } }
+        @media (max-width: 520px) { header { align-items: flex-start; flex-direction: column; } main { padding-top: 2.5rem; } .resumen { gap: 1rem; } }
+    </style>
+</head>
+<body>
+    <header>
+        <a class="marca" href="{% url 'mi_proyecto_web:inicio' %}">FerroCasa</a>
+        <nav>
+            <a href="{% url 'mi_proyecto_web:lista' %}">Catálogo</a>
+            {% if user.is_authenticated %}
+                <span>{{ user.username }}</span>
+                <form method="post" action="{% url 'mi_proyecto_web:logout' %}">{% csrf_token %}<button class="nav-salir" type="submit">Salir</button></form>
+            {% else %}
+                <a href="{% url 'mi_proyecto_web:login' %}">Iniciar sesión</a>
+            {% endif %}
+            <a href="{% url 'admin:index' %}">Administrar</a>
+        </nav>
+    </header>
+    <main>
+        {% if messages %}
+            <div class="mensajes">
+                {% for message in messages %}
+                    <div class="mensaje {{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% block content %}{% endblock %}
+    </main>
+    <footer>FerroCasa · Soluciones para construir y reparar</footer>
+</body>
+</html>

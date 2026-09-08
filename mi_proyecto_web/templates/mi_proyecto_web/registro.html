@@ -1,0 +1,16 @@
+{% extends 'mi_proyecto_web/base.html' %}
+
+{% block title %}Crear cuenta | FerroCasa{% endblock %}
+
+{% block content %}
+<section class="formulario">
+    <p class="hero-kicker">Empieza a comprar</p>
+    <h1>Crear cuenta</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ formulario.as_p }}
+        <button class="boton" type="submit">Crear cuenta</button>
+    </form>
+    <p class="intro">¿Ya tienes cuenta? <a href="{% url 'mi_proyecto_web:login' %}">Inicia sesión</a>.</p>
+</section>
+{% endblock %}

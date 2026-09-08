@@ -1,0 +1,48 @@
+{% extends 'mi_proyecto_web/base.html' %}
+{% load static %}
+
+{% block title %}Catálogo | FerroCasa{% endblock %}
+
+{% block content %}
+<h1>Todo para tu hogar</h1>
+<p class="intro">Herramientas, materiales y accesorios para construir, reparar y mantener tu hogar.</p>
+<section class="resumen" aria-label="Resumen del catálogo">
+    <div><strong>{{ resumen.total }}</strong> productos</div>
+    <div><strong>{{ resumen.disponibles }}</strong> con stock</div>
+</section>
+<section class="productos">
+    {% for producto in productos %}
+    <article class="producto{% if producto.stock == 0 %} agotado{% endif %}">
+        <div>
+            <img class="producto-imagen" src="{% static producto.imagen_visible %}" alt="{{ producto.nombre }}" loading="lazy">
+            <span class="categoria">{{ producto.categoria }}</span>
+            <h2>{{ producto.nombre }}</h2>
+            <span class="precio">${{ producto.precio }}</span>
+        </div>
+        <div>
+            {% if producto.stock > 0 %}
+                <span class="stock">{{ producto.stock }} unidades disponibles</span>
+            {% else %}
+                <span class="stock">Sin stock</span>
+            {% endif %}
+            <br>
+            <a class="boton" href="{% url 'mi_proyecto_web:detalle' producto.id %}">Ver detalle</a>
+            {% if user.is_authenticated %}
+                <form method="post" action="{% url 'mi_proyecto_web:comprar' producto.id %}">
+                    {% csrf_token %}
+                    {% if producto.stock > 0 %}
+                        <label for="cantidad-{{ producto.id }}">Cantidad</label>
+                        <input id="cantidad-{{ producto.id }}" name="cantidad" type="number" min="1" max="{{ producto.stock }}" value="1" required>
+                        <button class="boton boton-comprar" type="submit">Comprar producto</button>
+                    {% else %}
+                        <button class="boton boton-comprar" type="button" disabled>Sin stock</button>
+                    {% endif %}
+                </form>
+            {% else %}
+                <a class="boton" href="{% url 'mi_proyecto_web:login' %}?next={% url 'mi_proyecto_web:detalle' producto.id %}">Inicia sesión para comprar</a>
+            {% endif %}
+        </div>
+    </article>
+    {% endfor %}
+</section>
+{% endblock %}

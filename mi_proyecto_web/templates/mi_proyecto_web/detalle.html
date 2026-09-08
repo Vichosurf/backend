@@ -1,0 +1,36 @@
+{% extends 'mi_proyecto_web/base.html' %}
+{% load static %}
+
+{% block title %}{{ producto.nombre }} | FerroCasa{% endblock %}
+
+{% block content %}
+<a href="{% url 'mi_proyecto_web:lista' %}">&larr; Volver al catálogo</a>
+<article class="producto" style="max-width: 620px; margin-top: 2rem;">
+    <div>
+        <img class="producto-imagen" src="{% static producto.imagen_visible %}" alt="{{ producto.nombre }}">
+        <span class="categoria">{{ producto.categoria }}</span>
+        <h1>{{ producto.nombre }}</h1>
+        <p class="precio">${{ producto.precio }}</p>
+        {% if producto.stock > 0 %}
+            <p class="stock">Disponible: {{ producto.stock }} unidades</p>
+        {% else %}
+            <p class="stock">Producto temporalmente sin stock</p>
+        {% endif %}
+    </div>
+    <p class="intro">Código de producto: {{ producto.id }}. Consulta en tienda por disponibilidad y alternativas.</p>
+    {% if user.is_authenticated %}
+        <form method="post" action="{% url 'mi_proyecto_web:comprar' producto.id %}">
+            {% csrf_token %}
+            {% if producto.stock > 0 %}
+                <label for="cantidad">Cantidad a comprar</label>
+                <input id="cantidad" name="cantidad" type="number" min="1" max="{{ producto.stock }}" value="1" required>
+                <button class="boton boton-comprar" type="submit">Comprar producto</button>
+            {% else %}
+                <button class="boton boton-comprar" type="button" disabled>Sin stock</button>
+            {% endif %}
+        </form>
+    {% else %}
+        <a class="boton" href="{% url 'mi_proyecto_web:login' %}?next={% url 'mi_proyecto_web:detalle' producto.id %}">Inicia sesión para comprar</a>
+    {% endif %}
+</article>
+{% endblock %}
