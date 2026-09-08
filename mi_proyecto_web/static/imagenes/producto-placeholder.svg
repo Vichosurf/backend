@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img" aria-labelledby="title desc">
+  <title id="title">Producto sin imagen</title>
+  <desc id="desc">Ilustracion generica de una caja de herramientas</desc>
+  <rect width="800" height="500" fill="#e8e1d5"/>
+  <rect x="210" y="220" width="380" height="150" rx="12" fill="#20252b"/>
+  <rect x="310" y="160" width="180" height="80" rx="18" fill="none" stroke="#20252b" stroke-width="24"/>
+  <rect x="255" y="275" width="290" height="20" fill="#ef8f2f"/>
+</svg>
